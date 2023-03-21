@@ -31,12 +31,14 @@ class Task {
 extension Task {
     static var mockedTasks: [Task] {
         return [
-            Task(title: "Pickup flowers from the North Beach Farmers Market 💐",
-                 description: "Try to get an arrangement with a fall vibe. The Urban Vergo floral truck has some great bouquets."),
-            Task(title: "Take Kingsley for a walk 🦮",
-                 description: "Bring treats to encourage him to walk, otherwise be prepared to carry him when he flops."),
-            Task(title: "Grab a fresh candle 🕯",
-                 description: "If you're by the Ferry Building, check out SOMA Small Batch Goods, they have the best candles EVER!!! Their California Morning candle is divine!")
+            Task(title: "Selfie with a Stranger 👫",
+                 description: "Go out and try to talk with someone new. Submit a selfie of you and your new friend"),
+            Task(title: "Selfie with a statue 🗽",
+                 description: "Visit a monumental place,  post a selfie with that monument in the background"),
+            Task(title: "Selfie of your pet 🐕‍🦺",
+                 description: "Have a pet? Or know someone who does? Post a selfie with that pet making funny faces."),
+            Task(title: "Selfie with a celebrity ✨",
+                 description: "Ever met a celebrity? Here is your time to shine.")
         ]
     }
 }
