@@ -35,7 +35,7 @@ extension Task {
                  description: "Go out and try to talk with someone new. Submit a selfie of you and your new friend"),
             Task(title: "Selfie with a statue 🗽",
                  description: "Visit a monumental place,  post a selfie with that monument in the background"),
-            Task(title: "Selfie of your pet 🐕‍🦺",
+            Task(title: "Selfie with your pet 🐕‍🦺",
                  description: "Have a pet? Or know someone who does? Post a selfie with that pet making funny faces."),
             Task(title: "Selfie with a celebrity ✨",
                  description: "Ever met a celebrity? Here is your time to shine.")
