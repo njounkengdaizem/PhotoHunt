@@ -10,13 +10,14 @@ import MapKit
 import PhotosUI
 
 
-class TaskDetailViewController: UIViewController {
+class TaskDetailViewController: UIViewController, CLLocationManagerDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
 
     @IBOutlet private weak var completedImageView: UIImageView!
     @IBOutlet private weak var completedLabel: UILabel!
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var descriptionLabel: UILabel!
     @IBOutlet private weak var attachPhotoButton: UIButton!
+    let imagePicker = UIImagePickerController()
 
     // MapView outlet
     @IBOutlet private weak var mapView: MKMapView!
@@ -55,7 +56,6 @@ class TaskDetailViewController: UIViewController {
         completedImageView.tintColor = color
         completedLabel.textColor = color
 
-        mapView.isHidden = !task.isComplete
         attachPhotoButton.isHidden = task.isComplete
     }
 
@@ -80,8 +80,10 @@ class TaskDetailViewController: UIViewController {
                 }
             }
         } else {
-            // Show photo picker
-            presentImagePicker()
+            // Show Camera option
+            presentCamera()
+         
+  
         }
         
     }
@@ -109,6 +111,33 @@ class TaskDetailViewController: UIViewController {
         present(picker, animated: true)
 
     }
+    
+    
+    private func presentCamera(){
+        let alertController = UIAlertController(title: "Take a photo", message: "You can take a live photo. Choose no to select an existing photo?", preferredStyle: .alert)
+
+        let yesAction = UIAlertAction(title: "Yes", style: .default) { (action) in
+            // handle Yes button tap action here
+            let imagePicker = UIImagePickerController()
+            imagePicker.sourceType = .camera
+            imagePicker.delegate = self
+            self.present(imagePicker, animated: true, completion: nil)
+            
+            
+            
+        }
+
+        let noAction = UIAlertAction(title: "No", style: .cancel) { (action) in
+            // handle No button tap action here
+            self.presentImagePicker()
+        }
+
+        alertController.addAction(yesAction)
+        alertController.addAction(noAction)
+
+        present(alertController, animated: true, completion: nil)
+    }
+
 
     func updateMapView() {
         // Make sure the task has image location.
@@ -134,10 +163,10 @@ extension TaskDetailViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         // Dismiss the picker
         picker.dismiss(animated: true)
-
+        
         // Get the selected image asset (we can grab the 1st item in the array since we only allowed a selection limit of 1)
         let result = results.first
-
+        
         // Get image location
         // PHAsset contains metadata about an image or video (ex. location, size, etc.)
         guard let assetId = result?.assetIdentifier,
@@ -149,40 +178,36 @@ extension TaskDetailViewController: PHPickerViewControllerDelegate {
         guard let provider = result?.itemProvider,
               // Make sure the provider can load a UIImage
               provider.canLoadObject(ofClass: UIImage.self) else { return }
-
+        
         // Load a UIImage from the provider
         provider.loadObject(ofClass: UIImage.self) { [weak self] object, error in
-
+            
             // Handle any errors
             if let error = error {
-              DispatchQueue.main.async { [weak self] in self?.showAlert(for:error) }
-            
+                DispatchQueue.main.async { [weak self] in self?.showAlert(for:error) }
+                
             }
-
+            
             // Make sure we can cast the returned object to a UIImage
             guard let image = object as? UIImage else { return }
-
-            print("🌉 We have an image!")
-
+            
             // UI updates should be done on main thread, hence the use of `DispatchQueue.main.async`
             DispatchQueue.main.async { [weak self] in
-
+                
                 // Set the picked image and location on the task
                 self?.task.set(image, with: location)
-
+                
                 // Update the UI since we've updated the task
                 self?.updateUI()
-
+                
                 // Update the map view since we now have an image an location
                 self?.updateMapView()
                 
             }
         }
     }
-    
-    
-
 }
+
 
 extension TaskDetailViewController: MKMapViewDelegate {
     // Implement mapView(_:viewFor:) delegate method.
